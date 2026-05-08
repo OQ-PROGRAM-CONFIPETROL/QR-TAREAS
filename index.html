@@ -107,14 +107,6 @@
             showError(data.error);
             return;
           }
-const tituloTipo = document.getElementById("tituloTipo");
-
-if (data.CLASIFICACION && data.CLASIFICACION.toUpperCase().includes("CRITICA")) {
-  tituloTipo.textContent = "TAREA CALIFICADA CRÍTICA";
-} else {
-  tituloTipo.textContent = "TAREA CALIFICADA";
-}
-
           
           document.getElementById("idTarea").textContent = data.ID_TAREA || "—";
           document.getElementById("tarea").textContent = data.TAREA || "—";
