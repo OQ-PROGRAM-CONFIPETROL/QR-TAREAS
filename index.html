@@ -99,7 +99,7 @@
       <thead>
         <tr>
           <th>Empresa</th>
-          <th>Tutor</th>
+          <th>Nombre</th>
           <th>Certificado</th>
         </tr>
       </thead>
@@ -161,7 +161,7 @@ if (data.CLASIFICACION && data.CLASIFICACION.trim() !== "") {
 
               tr.innerHTML = `
                 <td>${p.EMPRESA || "—"}</td>
-                <td>${p.TUTOR || "—"}</td>
+                <td>${p.NOMBRE || "—"}</td>
                 <td>${cert}</td>
               `;
 
