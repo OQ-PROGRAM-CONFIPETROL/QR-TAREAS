@@ -64,7 +64,7 @@
 
 <body>
   <div class="card">
-    <h1>TAREA CALIFICADA</h1>
+    <h1 id="tituloTipo">TAREA CALIFICADA</h1>
 
     <div class="item"><span class="label">ID tarea:</span> <span id="idTarea">—</span></div>
     <div class="item"><span class="label">Tarea:</span> <span id="tarea">—</span></div>
@@ -107,7 +107,15 @@
             showError(data.error);
             return;
           }
+const tituloTipo = document.getElementById("tituloTipo");
 
+if (data.CLASIFICACION && data.CLASIFICACION.toUpperCase().includes("CRITICA")) {
+  tituloTipo.textContent = "TAREA CALIFICADA CRÍTICA";
+} else {
+  tituloTipo.textContent = "TAREA CALIFICADA";
+}
+
+          
           document.getElementById("idTarea").textContent = data.ID_TAREA || "—";
           document.getElementById("tarea").textContent = data.TAREA || "—";
 
