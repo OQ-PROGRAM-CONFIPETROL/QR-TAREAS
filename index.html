@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR Tareas Calificadas</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#0b2340;
+      color:#111;
+      padding:24px;
+    }
+    .card{
+      background:#fff;
+      max-width:760px;
+      margin:40px auto;
+      padding:28px;
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
+    }
+    h1{
+      text-align:center;
+      margin:0 0 20px;
+    }
+    .item{
+      margin:12px 0;
+      font-size:18px;
+    }
+    .label{
+      font-weight:bold;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+    th, td{
+      border:1px solid #ddd;
+      padding:10px;
+      text-align:left;
+      font-size:14px;
+    }
+    th{
+      background:#0b2340;
+      color:#fff;
+    }
+    a{
+      color:#0b2340;
+      font-weight:bold;
+    }
+    .error{
+      background:#ffecec;
+      border:1px solid #ffb3b3;
+      color:#8a0000;
+      padding:12px;
+      border-radius:10px;
+      margin-top:15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>TAREA CALIFICADA</h1>
+
+    <div class="item"><span class="label">ID tarea:</span> <span id="idTarea">—</span></div>
+    <div class="item"><span class="label">Tarea:</span> <span id="tarea">—</span></div>
+
+    <h2>Proveedores / tutores autorizados</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Empresa</th>
+          <th>Tutor</th>
+          <th>Certificado</th>
+        </tr>
+      </thead>
+      <tbody id="tablaProveedores"></tbody>
+    </table>
+
+    <div id="error" class="error" style="display:none;"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const tarea = params.get("tarea");
+
+    const API_BASE = "https://script.google.com/macros/s/AKfycbxbzO1J8Dl0v4_NZ624FL9U7i4uIZzFhztAft7eyOWyQoGdR59VCxlpjUwrmgbIkZcKYA/exec";
+
+    function showError(msg){
+      const box = document.getElementById("error");
+      box.style.display = "block";
+      box.textContent = msg;
+    }
+
+    if (!tarea) {
+      showError("Falta el parámetro tarea en la URL. Ejemplo: ?tarea=SUP-001");
+    } else {
+      fetch(`${API_BASE}?tarea=${encodeURIComponent(tarea)}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            showError(data.error);
+            return;
+          }
+
+          document.getElementById("idTarea").textContent = data.ID_TAREA || "—";
+          document.getElementById("tarea").textContent = data.TAREA || "—";
+
+          const tbody = document.getElementById("tablaProveedores");
+          tbody.innerHTML = "";
+
+          const proveedores = Array.isArray(data.Proveedores) ? data.Proveedores : [];
+
+          if (!proveedores.length) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td colspan="3">Sin proveedores registrados.</td>`;
+            tbody.appendChild(tr);
+          } else {
+            proveedores.forEach(p => {
+              const tr = document.createElement("tr");
+
+              const cert = p.CERTIFICADO && p.CERTIFICADO.trim() !== ""
+                ? `<a href="${p.CERTIFICADO.trim()}" target="_blank" rel="noopener noreferrer">Ver certificado</a>`
+                : "Sin certificado";
+
+              tr.innerHTML = `
+                <td>${p.EMPRESA || "—"}</td>
+                <td>${p.TUTOR || "—"}</td>
+                <td>${cert}</td>
+              `;
+
+              tbody.appendChild(tr);
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          showError("No fue posible consultar la información de la tarea.");
+        });
+    }
+  </script>
+</body>
+</html>
