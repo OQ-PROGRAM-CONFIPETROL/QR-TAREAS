@@ -119,6 +119,13 @@ if (data.CLASIFICACION && data.CLASIFICACION.toUpperCase().includes("CRITICA")) 
           document.getElementById("idTarea").textContent = data.ID_TAREA || "—";
           document.getElementById("tarea").textContent = data.TAREA || "—";
 
+          const tituloTipo = document.getElementById("tituloTipo");
+
+if (data.CLASIFICACION && data.CLASIFICACION.trim() !== "") {
+  tituloTipo.textContent = "TAREA " + data.CLASIFICACION.toUpperCase();
+} else {
+  tituloTipo.textContent = "TAREA CALIFICADA";
+}
           const tbody = document.getElementById("tablaProveedores");
           tbody.innerHTML = "";
 
